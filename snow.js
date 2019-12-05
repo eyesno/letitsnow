@@ -3,8 +3,8 @@
     canvas.addEventListener('click', onCanvasClick, false);
     let context = canvas.getContext('2d');
 
-    let logo = document.getElementById( 'logo');
-    logo.style.opacity = "0.8";
+    let logo = new Image();
+    logo.src = "images/logo.png";
     logo.onload = updateLogo;
 
     let gDots = []
@@ -48,7 +48,7 @@
 
     function onCanvasClick() {
         gDots = []
-        createDots( 200, 'white', 2);
+        createDots( 200, '#ffffff', 2);
     }
 
 
@@ -77,15 +77,23 @@
         updateLogo();
 
         for( dot in gDots ) {
+            let opacity = toHex(gDots[dot].opacity);
+            let colour = gDots[dot].colour + opacity;
+            
             // do your drawing stuff here
             context.beginPath();
             context.arc(gDots[dot].x, gDots[dot].y, gDots[dot].radius, 0, 2 * Math.PI);
-            context.fillStyle = gDots[dot].colour;
+            context.fillStyle = colour;
             context.fill();
             context.lineWidth = 1;
-            context.strokeStyle = gDots[dot].colour;
+            context.strokeStyle = colour;
             context.stroke();
         }
+    }
+
+    function toHex( number ) {
+        var hex = Number(number).toString(16);
+        return hex;
     }
 
 
@@ -95,10 +103,11 @@
             let radius = Math.random() * maxRadius + 1;    
             
             let direction = randomRange( 45, 135 );
+            let opacity = Math.round( randomRange( 50, 255 ) );
             let x = 0;
             let y = 0;
 
-            let newDot = { x, y, radius, colour, direction };
+            let newDot = { x: x, y: y, radius: radius, colour: colour, direction: direction, opacity: opacity };
 
             respawn( newDot );
 
@@ -148,12 +157,14 @@
 
         let x = window.innerWidth / 2 - logo.width / 2;
         let y = window.innerHeight / 2 - logo.height / 2;
-    
+
+        context.globalAlpha = 0.7;
         context.drawImage( logo, x, y );
+        context.globalAlpha = 1.0;
     }
 
     
-    createDots( 200, 'white', 2);
+    createDots( 200, '#FFFFFF', 2);
     resizeCanvas();
    
     startAnimating( 60 );
