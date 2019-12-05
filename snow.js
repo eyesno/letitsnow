@@ -94,7 +94,7 @@
             
             let radius = Math.random() * maxRadius + 1;    
             
-            let direction = Math.random() * 359  + 1;
+            let direction = randomRange( 45, 135 );
             let x = 0;
             let y = 0;
 
@@ -108,26 +108,36 @@
     }
 
 
-    function respawn( dot ) {
+    function respawn( dot, origin ) {
+        if( origin == undefined ) {
+            origin = Math.random() * window.innerHeight + 1;
+        }
+
         dot.x = Math.random() * window.innerWidth + 1;
-        dot.y = Math.random() * window.innerHeight + 1;
+        dot.y = origin;
+    }
+
+    function randomRange( min, max ) {
+        return Math.random() * (+max - +min) + +min;
     }
 
 
     function moveDots() {
+
+        //console.log( 'dot direction=' + gDots[0].direction );
         
         for( index in gDots ) {
             let dot = gDots[index]
-
-            dot.x += Math.cos( dot.direction );
-            dot.y += Math.sin( dot.direction );
+            
+            dot.x += Math.cos(dot.direction * Math.PI/180 );
+            dot.y += Math.sin(dot.direction * Math.PI/180 );
 
             if( dot.x > (window.innerWidth + dot.radius) ||
                 dot.x < (0 - dot.radius) ||
                 dot.y > (window.innerHeight + dot.radius) ||
                 dot.y < (0 - dot.radius) ) {
 
-                dot.direction *= -(dot.direction);
+                respawn( dot, 0 );
             }
         }
     }
